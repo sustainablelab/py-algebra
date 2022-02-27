@@ -20,22 +20,20 @@ Solve 3x + 5 = 0
 ```run-example-script
 $ python use-solve.py
 Solve 3x + 5 = 0
-x=-5/3
+x = -5/3
 ```
 
 ## Run the lib tests with `doctest`
 
 ```run-lib-doctests
 $ python -m doctest solve.py
-
 ```
 
-*Expect no output.*
+*Expect no output. That means all tests pass.*
 
 ## Run the lib as a script
 
-This prints a few examples. It also prints my thoughts on what
-*not* to do, having taken my initial stab:
+This prints a few examples.
 
 ```run-solve-as-py-script
 $ python solve.py 
@@ -51,14 +49,4 @@ EXAMPLE 2:
 
 Solve 1x + 0.3 = 0
 x = -0.3/1
-
-And hiding the `1`:
-Solve x + 0.3 = 0
-x = -0.3
-
-EXAMPLE 3:
-
-Solve -1x + 0.3 = 0
-x = -0.3/-1
-
 ```
