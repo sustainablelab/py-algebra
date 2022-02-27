@@ -17,8 +17,10 @@ Solve 1x^2 + 2x + 2 = 0
 
 # Files
 
-- [use-solve.py](use-solve.py) example script that uses lib `solve.py`
-- [solve.py](solve.py) the actual lib
+- [use-solve.py](use-solve.py)
+    - example script that uses lib `solve.py`
+- [solve.py](solve.py)
+    - the actual lib
 
 # Usage
 
@@ -78,3 +80,8 @@ Roots:
 ( x + (1-1j) )
 ( x + (1+1j) )
 ```
+
+# Next steps
+
+[GitHub Projects page (click to open)](https://github.com/sustainablelab/py-algebra/projects/1)
+
