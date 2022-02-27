@@ -56,30 +56,41 @@ def hide_imaginary_if_eq_0(c : complex):
     if c.imag == 0: return c.real
     else: return c
 
-class Root():
-    def __init__(self, a : float, b : float, c : float, sign : str):
-        self.a = a
-        self.b = b
-        self.c = c
-        assert (sign == '+') or (sign == '-'), f"Invalid sign `{sign}`, must be str '+' or '-'"
-        self.sign = sign
-    def __repr__(self) -> tuple:
-        a = self.a
-        b = self.b
-        c = self.c
-        sign = self.sign
-        # TODO: simplify the representation
-        return f"({-b} {sign} sqrt[{b}^2 - 4*{a}*{c}])/(2*{a})"
-    def calc(self) -> complex:
-        a = self.a
-        b = self.b
-        c = self.c
-        sign = self.sign
-        if   sign == '+': result = (-b + cmath.sqrt(b**2 - 4*a*c))/(2*a)
-        elif sign == '-': result = (-b - cmath.sqrt(b**2 - 4*a*c))/(2*a)
-        else: assert False, f"Programmer error: How did Root get sign='{sign}'?"
-        result = hide_imaginary_if_eq_0(result)
-        return result
+def poly_str(coeff: list) -> str:
+    """Express polynomial as a human-readable string.
+
+    Parameters
+    ----------
+    coeff : list
+    
+        List of polynomial coefficients starting with the
+        coefficient of x^0 at index 0, then the coefficient
+        of x^1 at index 1, etc.
+
+    Example
+    -------
+    >>> poly_str([2,2,1])
+    '1x^2 + 2x + 2'
+
+    """
+    assert len(coeff) > 0, "List of coefficients cannot be empty."
+    # Return a string.
+    _str = ""
+    # Calculate polynomial order.
+    order = len(coeff)
+    # Put the highest-order coefficient first.
+    flipped_coeff = coeff[::-1] # DO NOT USE coeff.reverse()
+    # Build the polynomial string:
+    o = order # order of "this" term
+    for c in flipped_coeff:
+        o -= 1 # decrement the order
+        if o > 1:
+            _str += f"{c}x^{o} + "
+        elif o == 1:
+            _str += f"{c}x + "
+        else:
+            _str += f"{c}"
+    return _str
 
 # =====[ ACTUAL SOLVER STUFF IS HERE ]=====
 
@@ -163,46 +174,37 @@ def solve_ax_plus_b_eq_0(coeff: list) -> Ratio:
     ratio = Ratio(a, -1*b)
     return ratio
 
-def print_roots(roots : tuple) -> None:
-    for _root in roots:
-        if _root.imag == 0:
-            print(f"(x + {-1*_root.real})")
-        else:
-            print(f"( x + {-1*_root} )")
+class Root():
+    """A root of the quadratic: ax^2 + bx + c = 0
 
-def solve_second_order(coeff: list) -> tuple:
-    """Solve for x: ax^2 + bx + c = 0
+    Methods
+    -------
 
-    Return
-    ------
-    roots : tuple
+    __repr__ :
 
-        Polynomial is second order, so there are two roots.
-        Each root is type ``complex``. Return a Python
-        ``tuple`` of ``complex`` objects.
+        Perform purely symbolic manipulation to express the root as
+        a string.
 
-    Examples
-    --------
+    calc :
 
-    Throw an error if user does not call this with exactly 3
-    coefficients:
-    >>> roots = solve_second_order([2, 3])
-    Traceback (most recent call last):
-        ...
-    AssertionError: Must be THREE coefficients, your list has 2 coefficients.
+        Calculate a numeric value.
 
-    >>> roots = solve_second_order([2, 3, 1])
-    Solve 1x^2 + 3x + 2 = 0
+    as_factor :
 
-    >>> type(roots[0])
-    <class 'complex'>
+        Calculate a numeric value, but express as a
+        1st-order polynomial (a string).
 
-    >>> print(roots)
-    ((-1+0j), (-2+0j))
+    Parameters
+    ----------
 
-    >>> print_roots(roots)
-    (x + 1.0)
-    (x + 2.0)
+    a, b, c : float
+
+        The coefficients in the expression ax^2 + bx + c = 0
+
+    sign : str
+
+        Either '+' or '-'. There are two roots. Instantiate
+        the root with sign='+' or with sign='-'.
 
     Explanation
     -----------
@@ -243,56 +245,55 @@ def solve_second_order(coeff: list) -> tuple:
        │           2a           │
        └────────────────────────┘
 
-    First make up a simple example::
-
-               x + 1
-             * x + 2
-               ─────
-              2x + 2
-        x^2 +  x
-        ────────────
-        x^2 + 3x + 2
-
-    Solve for x: x^2 + 3x + 2
-
-    Expect roots ``x = -1`` and ``x = -2``.
-
-    Input coefficients as a list::
-
-        # 
-        # c*x^0, b*x^1, a*x^2
-        [ 2,     3,     1]
-
-    Assert len(coeff) == 3.
-
-    x1 = (-3 + cmath.sqrt(3**2 - 4*1*2))/(2*1)
-    x2 = (-3 - cmath.sqrt(3**2 - 4*1*2))/(2*1)
-
-    x1 = -1
-    x2 = -2
-
     """
+    def __init__(self, a : float, b : float, c : float, sign : str):
+        self.a = a
+        self.b = b
+        self.c = c
+        assert (sign == '+') or (sign == '-'), f"Invalid sign `{sign}`, must be str '+' or '-'"
+        self.sign = sign
 
-    assert len(coeff) == 3, f"Must be THREE coefficients, your list has {len(coeff)} coefficients."
+    def __repr__(self) -> tuple:
+        a = self.a
+        b = self.b
+        c = self.c
+        sign = self.sign
+        # TODO: simplify the representation
+        return f"({-b} {sign} sqrt[{b}^2 - 4*{a}*{c}])/(2*{a})"
 
-    c = coeff[0] # x^0
-    b = coeff[1] # x^1
-    a = coeff[2] # x^2
-    
-    print(f"Solve {poly_str(coeff)} = 0")
+    def calc(self) -> complex:
+        a = self.a
+        b = self.b
+        c = self.c
+        sign = self.sign
+        if   sign == '+': result = (-b + cmath.sqrt(b**2 - 4*a*c))/(2*a)
+        elif sign == '-': result = (-b - cmath.sqrt(b**2 - 4*a*c))/(2*a)
+        else: assert False, f"Programmer error: How did Root get sign='{sign}'?"
+        result = hide_imaginary_if_eq_0(result)
+        return result
 
-    x1 = (-b + cmath.sqrt(b**2 - 4*a*c))/(2*a)
-    x2 = (-b - cmath.sqrt(b**2 - 4*a*c))/(2*a)
+    def as_factor(self) -> str:
+        root = self.calc()
+        return f"(x + {-1*root})"
 
-    return (x1, x2)
-
-
-def better_solve_second_order(coeff: list) -> tuple:
+def solve_second_order(coeff: list) -> tuple:
     """Repackage the polynomial as a list of roots.
+
+    Return
+    ------
+    roots : tuple
+
+        Polynomial is second order, so there are two roots.
+        Each root is type ``Root``. Return a Python
+        ``tuple`` of ``Root`` objects.
+
+        The work to "solve for x" in "ax^2 + bx + c = 0"
+        happens in the ``Root`` methods.
+
 
     Example
     -------
-    >>> roots = better_solve_second_order([-35,2,1])
+    >>> roots = solve_second_order([-35,2,1])
     Solve 1x^2 + 2x + -35 = 0
 
     The return value is a ``tuple`` of roots (an immutable list of roots):
@@ -314,7 +315,7 @@ def better_solve_second_order(coeff: list) -> tuple:
 
     Note that real roots are returned as type ``float``.
     If the roots are complex, ``root.calc()`` returns type ``complex``:
-    >>> roots = better_solve_second_order([2,2,1])
+    >>> roots = solve_second_order([2,2,1])
     Solve 1x^2 + 2x + 2 = 0
     >>> roots[0].calc()
     (-1+1j)
@@ -332,41 +333,22 @@ def better_solve_second_order(coeff: list) -> tuple:
     print(f"Solve {poly_str(coeff)} = 0")
     return (Root(a,b,c,'+'), Root(a,b,c,'-'))
 
-def poly_str(coeff: list) -> str:
-    """Express polynomial as a human-readable string.
+# =====[ HELPERS FOR REDUCING LOC IN main() ]=====
 
-    Parameters
-    ----------
-    coeff : list
-    
-        List of polynomial coefficients starting with the
-        coefficient of x^0 at index 0, then the coefficient
-        of x^1 at index 1, etc.
+def print_a_bunch_of_stuff(coeff : list) -> None:
 
-    Example
-    -------
-    >>> poly_str([2,2,1])
-    '1x^2 + 2x + 2'
+    # Find roots of quadratic
+    roots = solve_second_order(coeff)
 
-    """
-    assert len(coeff) > 0, "List of coefficients cannot be empty."
-    # Return a string.
-    _str = ""
-    # Put the highest-order coefficient first.
-    coeff.reverse()
-    # Calculate polynomial order.
-    order = len(coeff)
-    # Build the polynomial string:
-    o = order # order of "this" term
-    for c in coeff:
-        o -= 1 # decrement the order
-        if o > 1:
-            _str += f"{c}x^{o} + "
-        elif o == 1:
-            _str += f"{c}x + "
-        else:
-            _str += f"{c}"
-    return _str
+    # Show me the human readable roots and their calculated values.
+    print("Roots:")
+    for root in roots:
+        print(root, " = ", root.calc())
+
+    # Also show answer as a product of 1st-order factors.
+    print("Print quadratic roots as 1st-order factors:")
+    factors = [root.as_factor() for root in roots]
+    print(poly_str(coeff), " = ", f"{factors[0]}{factors[1]}")
 
 if __name__ == '__main__':
     print("\nSome examples calling `solve_ax_plus_b_eq_0()`:")
@@ -380,30 +362,11 @@ if __name__ == '__main__':
     print(f"x = {x}")
 
     print("\nSome examples calling `solve_second_order()`:")
-
-    print("\nEXAMPLE 1:\n")
-    roots = solve_second_order([2, 3, 1])
-    print("Roots:")
-    print_roots(roots)
-
-    print("\nEXAMPLE 2:\n")
-    roots = solve_second_order([2, 2, 1])
-    print("Roots:")
-    print_roots(roots)
-
-    print("\nTry writing a better version of `solve_second_order()`:")
     print("\nEXAMPLE 1: real roots calculate into type `float`\n")
-    roots = better_solve_second_order([2, 3, 1])
-    print("Roots:")
-    for root in roots:
-        print(root, " = ", root.calc())
+    coeff = [2,3,1]
+    print_a_bunch_of_stuff(coeff)
 
     print("\nEXAMPLE 2: complex roots calculate into type `complex`\n")
-    roots = better_solve_second_order([2, 2, 1])
-    print("Roots:")
-    for root in roots:
-        print(root, " = ", root.calc())
+    coeff = [2,2,1]
+    print_a_bunch_of_stuff(coeff)
 
-    print("Print quadratic roots as 1st-order factors:")
-    poly = [2,2,1]
-    print(poly_str(poly))

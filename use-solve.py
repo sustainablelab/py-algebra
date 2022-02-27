@@ -5,5 +5,6 @@ print()
 
 roots = solve.solve_second_order([2,2,1])
 print("Roots:")
-solve.print_roots(roots)
+for root in roots:
+    print(root.as_factor())
 print()

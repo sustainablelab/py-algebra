@@ -33,8 +33,8 @@ x = -5/3
 
 Solve 1x^2 + 2x + 2 = 0
 Roots:
-( x + (1-1j) )
-( x + (1+1j) )
+(x + (1-1j))
+(x + (1+1j))
 ```
 
 ## Run the lib tests with `doctest`
@@ -66,19 +66,23 @@ x = -0.3/1
 
 Some examples calling `solve_second_order()`:
 
-EXAMPLE 1:
+EXAMPLE 1: real roots calculate into type `float`
 
 Solve 1x^2 + 3x + 2 = 0
 Roots:
-(x + 1.0)
-(x + 2.0)
+(-3 + sqrt[3^2 - 4*1*2])/(2*1)  =  -1.0
+(-3 - sqrt[3^2 - 4*1*2])/(2*1)  =  -2.0
+Print quadratic roots as 1st-order factors:
+1x^2 + 3x + 2  =  (x + 1.0)(x + 2.0)
 
-EXAMPLE 2:
+EXAMPLE 2: complex roots calculate into type `complex`
 
 Solve 1x^2 + 2x + 2 = 0
 Roots:
-( x + (1-1j) )
-( x + (1+1j) )
+(-2 + sqrt[2^2 - 4*1*2])/(2*1)  =  (-1+1j)
+(-2 - sqrt[2^2 - 4*1*2])/(2*1)  =  (-1-1j)
+Print quadratic roots as 1st-order factors:
+1x^2 + 2x + 2  =  (x + (1-1j))(x + (1+1j))
 ```
 
 # Next steps
