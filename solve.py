@@ -23,11 +23,27 @@ class Ratio():
 
     Given two numbers: `a` and `b`, the ratio is `b/a`.
     """
-    def __init__(self, a, b):
+    def __init__(self, a : float, b : float):
         self.a = a
         self.b = b
     def __repr__(self):
         return f"{self.b}/{self.a}"
+
+class Root():
+    def __init__(self, a : float, b : float, c : float, sign : str):
+        self.a = a
+        self.b = b
+        self.c = c
+        assert (sign == '+') or (sign == '-'), f"Invalid sign `{sign}`, must be str '+' or '-'"
+        self.sign = sign
+    def __repr__(self) -> tuple:
+        a = self.a
+        b = self.b
+        c = self.c
+        sign = self.sign
+        # TODO: simplify the representation
+        return f"({-b} {sign} sqrt[{b}^2 - 4*{a}*{c}])/(2*{a})"
+
 
 # =====[ ACTUAL SOLVER STUFF IS HERE ]=====
 
@@ -228,10 +244,23 @@ def solve_second_order(coeff: list) -> tuple:
     a = coeff[2] # x^2
     
     print(f"Solve {a}x^2 + {b}x + {c} = 0")
+
     x1 = (-b + cmath.sqrt(b**2 - 4*a*c))/(2*a)
     x2 = (-b - cmath.sqrt(b**2 - 4*a*c))/(2*a)
 
     return (x1, x2)
+
+
+def better_solve_second_order(coeff: list) -> tuple:
+    assert len(coeff) == 3, f"Must be THREE coefficients, your list has {len(coeff)} coefficients."
+
+    c = coeff[0] # x^0
+    b = coeff[1] # x^1
+    a = coeff[2] # x^2
+    
+    print(f"Solve {a}x^2 + {b}x + {c} = 0")
+
+    return (Root(a,b,c,'+'), Root(a,b,c,'-'))
 
 if __name__ == '__main__':
     print("\nSome examples calling `solve_ax_plus_b_eq_0()`:")
@@ -255,3 +284,10 @@ if __name__ == '__main__':
     roots = solve_second_order([2, 2, 1])
     print("Roots:")
     print_roots(roots)
+
+    print("\nTry writing a better version of `solve_second_order()`:")
+    print("\nEXAMPLE 1:\n")
+    roots = better_solve_second_order([2, 3, 1])
+    print("Roots:")
+    for root in roots:
+        print(root)
