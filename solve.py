@@ -159,7 +159,7 @@ def solve_ax_plus_b_eq_0(coeff: list) -> Ratio:
     b = coeff[0] # x^0
     a = coeff[1] # x^1
 
-    print(f"Solve {poly_str(coeff)}")
+    print(f"Solve {poly_str(coeff)} = 0")
     ratio = Ratio(a, -1*b)
     return ratio
 
@@ -279,7 +279,7 @@ def solve_second_order(coeff: list) -> tuple:
     b = coeff[1] # x^1
     a = coeff[2] # x^2
     
-    print(f"Solve {poly_str(coeff)}")
+    print(f"Solve {poly_str(coeff)} = 0")
 
     x1 = (-b + cmath.sqrt(b**2 - 4*a*c))/(2*a)
     x2 = (-b - cmath.sqrt(b**2 - 4*a*c))/(2*a)
@@ -329,7 +329,7 @@ def better_solve_second_order(coeff: list) -> tuple:
     a = coeff[2] # x^2
     
     # print(f"Solve {a}x^2 + {b}x + {c} = 0")
-    print(f"Solve {poly_str(coeff)}")
+    print(f"Solve {poly_str(coeff)} = 0")
     return (Root(a,b,c,'+'), Root(a,b,c,'-'))
 
 def poly_str(coeff: list) -> str:
@@ -346,7 +346,7 @@ def poly_str(coeff: list) -> str:
     Example
     -------
     >>> poly_str([2,2,1])
-    '1x^2 + 2x + 2 = 0'
+    '1x^2 + 2x + 2'
 
     """
     assert len(coeff) > 0, "List of coefficients cannot be empty."
@@ -365,7 +365,7 @@ def poly_str(coeff: list) -> str:
         elif o == 1:
             _str += f"{c}x + "
         else:
-            _str += f"{c} = 0"
+            _str += f"{c}"
     return _str
 
 if __name__ == '__main__':
